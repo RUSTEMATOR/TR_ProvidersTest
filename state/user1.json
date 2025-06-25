@@ -1,0 +1,91 @@
+{
+  "cookies": [
+    {
+      "name": "__cf_bm",
+      "value": "xE_cQbDyP9x_xTVHKwnYjEIPJUKT.U1R57Ram5FWYXg-1750862705-1.0.1.1-swcWWj1DRm.CgEzR8RwSL2hKdf0g3t3STHamEOgRlajLPrghVnWmKBiuB41s.8alL2c36VkhLf0h4lKgR6Tb7kvsotAzxQihL0ov_Tku2b8",
+      "domain": ".onesignal.com",
+      "path": "/",
+      "expires": 1750864504.518598,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_ga_8NVCR9P91P",
+      "value": "GS2.1.s1750862704$o1$g0$t1750862704$j60$l0$h602924870",
+      "domain": ".tombriches.com",
+      "path": "/",
+      "expires": 1785422704.817301,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga",
+      "value": "GA1.1.1749452217.1750862705",
+      "domain": ".tombriches.com",
+      "path": "/",
+      "expires": 1785422704.817555,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_fbp",
+      "value": "fb.1.1750862705159.783263744442429940",
+      "domain": ".tombriches.com",
+      "path": "/",
+      "expires": 1758638705,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://tombriches.com",
+      "localStorage": [
+        {
+          "name": "lastExternalReferrerTime",
+          "value": "1750862705156"
+        },
+        {
+          "name": "sessionUuid",
+          "value": "2cb012b3-c1b3-4bab-95a9-5c0bc5c51282"
+        },
+        {
+          "name": "messaging__token",
+          "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5Ml9fYmVsZ2l1bV9raW5nYmlsbHkueHl6IiwiZXhwIjoxNzUwOTQ5MTA0fQ.99V1ljQq7RjCnST25Wag_box8UyfeNEShSjccTPOXtM"
+        },
+        {
+          "name": "preloadRetries",
+          "value": "0"
+        },
+        {
+          "name": "localTournamentsSeen",
+          "value": "{}"
+        },
+        {
+          "name": "topicsLastReferenceTime",
+          "value": "1750862705162"
+        },
+        {
+          "name": "providerTournamentsSeen",
+          "value": "{\"drops_and_wins\":true}"
+        },
+        {
+          "name": "lastExternalReferrer",
+          "value": "empty"
+        },
+        {
+          "name": "ft",
+          "value": "1750862704427"
+        },
+        {
+          "name": "language",
+          "value": "en"
+        }
+      ]
+    }
+  ]
+}
