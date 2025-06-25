@@ -71,6 +71,7 @@ async function waitForDNS(domain: string, timeoutMs = 30000) {
 }
 
 
+
 for (let {location, creds} of Object.values(testData)) {
 
     test.describe(`Providers test ${location}`, () => {
@@ -84,11 +85,12 @@ for (let {location, creds} of Object.values(testData)) {
             await vpnController.vpnConnect(location);
             await waitForDNS('tombriches.com');
 
-            await page.goto('https://tombriches.com'); 
-           
+            await mainPage.navTo('https://tombriches.com'); 
+            await mainPage.addLocatorHandler(mainPage.getTournModal, mainPage.handler)
+            await mainPage.addLocatorHandler(mainPage.getCustomerIoMessage, mainPage.handrelCustomerIo)
             await mainPage.openLoginModal()
             await mainPage.login({email: creds.email, password: creds.password})
-            await mainPage.page.pause();
+
         })
 
         test('Check games of providers', async () => {

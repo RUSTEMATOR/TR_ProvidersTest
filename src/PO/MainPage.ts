@@ -12,20 +12,30 @@ interface credentials {
 export default class MainPage extends BasePage {
 
     private signInButton: Locator = this.page.locator('aside  .button-secondary')
-    private emailInput: Locator = this.page.locator('')
-    private passwordInput: Locator = this.page.locator('')
-    private submitLoginButton : Locator = this.page.locator('')
+    private emailInput: Locator = this.page.locator('#email')
+    private passwordInput: Locator = this.page.locator('#password')
+    private submitLoginButton : Locator = this.page.locator('[data-role="modalContentWrapper"] button')
     private allProviders: Locator = this.page.locator('')
-    private gameCount: Locator = this.page.locator('')
-    private depositButton: Locator = this.page.locator('')
-    private providersDropdown: Locator = this.page.locator('')
-    private gameCard: Locator = this.page.locator('')
-    private playGameButton: Locator = this.page.locator('')
+    private gameCount: Locator = this.page.locator('.provider-card .text-p_games_count')
+    private depositButton: Locator = this.page.locator('header .button-primary')
+    private providersDropdown: Locator = this.page.locator('.input_button')
+    private gameCard: Locator = this.page.locator('.gameCardImage')
+    private playGameButton: Locator = this.page.locator('.gameCardImage button.button-primary')
     private gameTitle: Locator = this.page.locator('')
     private catalogueList: Locator = this.page.locator('')
+    private tournModal: Locator = this.page.locator('[data-test-id="tourn_modal"]')
+    private customerIoMessage: Locator = this.page.locator('html.notranslate #gist-overlay')
 
     async openLoginModal() {
         await this.signInButton.click()
+    }
+
+    async handler() {
+        await this.page.getByTitle('Cancel').click()
+    }
+
+    async handrelCustomerIo() {
+        await this.page.reload()
     }
 
     async login({email, password}: credentials) {
@@ -119,5 +129,12 @@ export default class MainPage extends BasePage {
         return this.providersDropdown
     }
 
+    get getTournModal() {
+        return this.tournModal
+    }
+
+    get getCustomerIoMessage() {
+        return this.customerIoMessage
+    }
     
 }

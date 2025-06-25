@@ -14,4 +14,8 @@ export default class BasePage {
     async goBack() {
         await this.page.goBack()
     }
+    
+    async addLocatorHandler(locator, handler) {
+        await this.page.addLocatorHandler(locator, handler)
+    }
 }
