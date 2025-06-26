@@ -1,73 +1,45 @@
-import { exec } from 'child_process';
-import { promisify } from 'util';
-
-const execAsync = promisify(exec);
+import { exec } from "child_process";
 
 export class VpnController {
-  constructor() {}
+    constructor() {}
 
-  async runVPN(command: string): Promise<string> {
-    try {
-      const { stdout, stderr } = await execAsync(command, {
-        cwd: 'C:/Program Files (x86)/ExpressVPN/services/',
-      });
+    runVPN(command: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            exec(command, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`Error executing command: ${error.message}`);
+                    reject(error.message);
+                    return;
+                }
 
-      if (stderr) {
-        console.error(`Command stderr: ${stderr}`);
-      }
+                if (stderr) {
+                    console.error(`Error: ${stderr}`);
+                    reject(stderr);
+                    return;
+                }
 
-      return stdout;
-    } catch (error: any) {
-      console.error(`Error executing command: ${error.message}`);
-      return '';
-    }
-  }
-
-  async vpnConnect(location: string) {
-    try {
-      await this.runVPN(`ExpressVPN.CLI connect "${location}"`);
-    } catch (error) {
-      console.error(`Error connecting to VPN: ${error}`);
-    }
-  }
-
-  async vpnDisconnect() {
-    await this.runVPN('ExpressVPN.CLI disconnect');
-  }
-
-  async vpnCheckStatus(): Promise<'connected' | 'connecting' | 'disconnected' | 'unknown'> {
-    const output = await this.runVPN('ExpressVPN.CLI status');
-
-    if (output.includes('Connected to')) {
-      return 'connected';
+                console.log(`Output: ${stdout}`);
+                resolve(stdout);
+            });
+        });
     }
 
-    if (output.includes('Connecting...')) {
-      return 'connecting';
+    async vpnConnnect(location: string): Promise<string> {
+        return await this.runVPN(`expresso connect "${location}"`);
     }
 
-    if (output.includes('Not connected')) {
-      return 'disconnected';
+    async vpnDisconnect(): Promise<string> {
+        return await this.runVPN('expresso disconnect');
     }
 
-    return 'unknown';
-  }
-
-  async isConnectedToLocation(targetLocation: string): Promise<boolean> {
-    const output = await this.runVPN('ExpressVPN.CLI status');
-
-    const match = output.match(/Connected to ([^\n]+)/);
-    if (match) {
-      const connectedLocation = match[1].trim();
-      return connectedLocation.toLowerCase() === targetLocation.toLowerCase();
+    async vpnCheckStatus(): Promise<string> {
+        const status = await this.runVPN('expresso status');
+        return status.trim();
     }
 
-    return false;
-  }
-
-  async sleepVPN(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
+    async sleepVPN(ms: number): Promise<void> {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
 }
 
 export default VpnController;
