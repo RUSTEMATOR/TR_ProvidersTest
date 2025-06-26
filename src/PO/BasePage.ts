@@ -9,6 +9,7 @@ export default class BasePage {
 
     async navTo(url: string) {
         await this.page.goto(url)
+        await this.page.waitForLoadState('load')
     }
 
     async goBack() {

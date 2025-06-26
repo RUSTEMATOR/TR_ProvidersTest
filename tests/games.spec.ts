@@ -77,30 +77,49 @@ for (let {location, creds} of Object.values(testData)) {
     test.describe(`Providers test ${location}`, () => {
         let mainPage: MainPage
         let vpnController: VpnController
+        let depModalHandled: boolean = false
 
         test.beforeEach(async ({page}) => {
             vpnController = new VpnController();
             mainPage = new MainPage(page);
 
             await vpnController.vpnConnnect(location);
+
+             while (true) {
+                const status = await vpnController.isConnectedToLocation(location)
+
+                if (status === true){
+                    break
+                } else {
+                    await vpnController.sleepVPN(2000)
+                }
+            }
+            console.log(`VPN connected to ${location}`);
             await waitForDNS('tombriches.com');
 
             await mainPage.navTo('https://tombriches.com'); 
-            await mainPage.addLocatorHandler(mainPage.getTournModal, () => mainPage.handler())
-            await mainPage.addLocatorHandler(mainPage.getCustomerIoMessage, () => mainPage.handrelCustomerIo())
-            await mainPage.addLocatorHandler(mainPage.getDepModal, () => mainPage.handler())
+            await mainPage.addLocatorHandler(mainPage.getTournModal, async () => await mainPage.handler())
+            await mainPage.addLocatorHandler(mainPage.getCustomerIoMessage, async () => await mainPage.handrelCustomerIo())
+            
+            // await mainPage.addLocatorHandler(mainPage.getDepModal, async () => {
+            //     await mainPage.handler()
+            //     depModalHandled = true;
+            // })
+            
 
             await mainPage.openLoginModal()
             await mainPage.login({email: creds.email, password: creds.password})
-
+            await mainPage.getDepModal.waitFor({state: 'visible'}).then(async () => await mainPage.closeDepModal())
         })
 
         test('Check games of providers', async () => {
+            
             await mainPage.openProvidersDropdown();
             await mainPage.getProviderLocator.first().waitFor({state: 'visible'})
             const providerNames = await mainPage.getAllProviders(); 
             
             for (const providerName of providerNames) {
+            
                 await mainPage.clickOnProvider(providerName);
 
                 await mainPage.page.waitForTimeout(3000); 
@@ -114,23 +133,28 @@ for (let {location, creds} of Object.values(testData)) {
                 const numGamesToCheck = Math.min(2, playButtons.length); 
                 for (let i = 0; i < numGamesToCheck; i++) {
                     // const gameTitle = await mainPage.getGameTitle(i);
-
+                    const providerTitle = await mainPage.getProviderTitle(i);
+                    const gameTitle = await mainPage.getGameTitle(i);
                     await test.step(`Checking "${i}" of provider "${providerName}"`, async () => {
                         await mainPage.clickOnPlayButton(i, playButtons[i]);
                         await mainPage.page.waitForTimeout(15000);
 
                         // const safeTitle = gameTitle.replace(/[<>:"\/\\|?*]/g, '-'); // sanitize filename
                         await mainPage.page.screenshot({
-                            path: `Screenshots/${location}/${providerName}_${i}.png`
+                            path: `Screenshots/${location}/${providerTitle}_${gameTitle}.png`
                         });
 
                         await mainPage.navTo('/');
-                        await mainPage.openProvidersDropdown();
-                        await mainPage.clickOnProvider(providerName);
+                        if (i < numGamesToCheck - 1) {
+                            await mainPage.openProvidersDropdown();
+                            await mainPage.clickOnProvider(providerName);
+                        }
                     });
                 }
 
                 await mainPage.navTo('/'); 
+                await mainPage.openProvidersDropdown();
+                
             }
         });
 

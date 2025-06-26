@@ -17,11 +17,13 @@ export default class MainPage extends BasePage {
     private providersDropdown: Locator = this.page.locator('.input_button');
     private gameCard: Locator = this.page.locator('.gameCardImage');
     private playGameButton: Locator = this.page.locator('.gameCardImage button.button-primary');
-    private gameTitle: Locator = this.page.locator('');
+    private gameTitle: Locator = this.page.locator('div.items-center > p');
+    private providerTitle: Locator = this.page.locator('p.text-center')
     private catalogueList: Locator = this.page.locator('main div.switcher-wrapper + div.items-center');
     private tournModal: Locator = this.page.locator('[data-test-id="tourn_modal"]');
     private customerIoMessage: Locator = this.page.locator('html.notranslate #gist-overlay');
     private depModal: Locator = this.page.locator('[data-test-id="dep_modal"]');
+    private closeButton: Locator = this.page.locator('[data-test-id="close_btn"]')
 
     async openLoginModal() {
         console.log('Opening login modal...');
@@ -29,13 +31,25 @@ export default class MainPage extends BasePage {
     }
 
     async handler() {
+        const url: string = this.page.url()
         console.log('Handling modal close...');
-        await this.page.locator('[data-test-id="close_btn"]').click();
+        await this.closeButton.click();
+        // if (await this.allProviders.first().isHidden()) {
+        //     if (!url.includes('/games/')){
+        //         await this.openProvidersDropdown()
+        //     }
+        // } 
     }
 
     async handrelCustomerIo() {
+        const url: string = this.page.url()
         console.log('Reloading page to handle Customer.io overlay...');
         await this.page.reload();
+        // if (await this.allProviders.first().isHidden()) {
+        //     if (!url.includes('/games/')){
+        //         await this.openProvidersDropdown()
+        //     }
+        // } 
     }
 
     async login({ email, password }: credentials) {
@@ -110,19 +124,39 @@ export default class MainPage extends BasePage {
         return await this.playGameButton.all();
     }
 
-    // async getGameTitle(index: number): Promise<string> {
-    //     console.log(`Getting title for game at index: ${index}`);
+    async getGameTitle(index: number): Promise<string> {
+        const gameCards = await this.getAllGameCards();
+        const gameCard = gameCards[index];
+        if (!gameCard) {
+            throw new Error(`Game card at index ${index} not found.`);
+        }
 
-    //     const titleLocator = gameCard.locator(this.gameTitle);
-    //     const titleText = await titleLocator.textContent();
+        const titleLocator = gameCard.locator(this.gameTitle);
+        const titleText = await titleLocator.textContent();
 
-    //     if (titleText === null) {
-    //         throw new Error(`Title text at index ${index} is null.`);
-    //     }
+        if (titleText === null) {
+            throw new Error(`Title text at index ${index} is null.`);
+        }
 
-    //     console.log(`Found game title: ${titleText}`);
-    //     return titleText;
-    // }
+        return titleText;
+    }
+
+    async getProviderTitle(index: number): Promise<string> {
+        const gameCards = await this.getAllGameCards();
+        const gameCard = gameCards[index];
+        if (!gameCard) {
+            throw new Error(`Game card at index ${index} not found.`);
+        }
+
+        const titleLocator = gameCard.locator(this.providerTitle);
+        const titleText = await titleLocator.textContent();
+
+        if (titleText === null) {
+            throw new Error(`Provider title text at index ${index} is null.`);
+        }
+
+        return titleText;
+    }
 
     async clickOnPlayButton(index, button: Locator) {
         const gameCards = await this.getAllGameCards();
@@ -135,6 +169,10 @@ export default class MainPage extends BasePage {
         console.log('Clicking on play button...');
         await this.hoverOverGameCard(gameCard);
         await button.click();
+    }
+
+    async closeDepModal(): Promise<void> {
+        await this.closeButton.click()
     }
 
     get getGameCount() {
@@ -165,4 +203,10 @@ export default class MainPage extends BasePage {
     get getProviderLocator() {
         return this.allProviders
     }
+
+
+    get getCloseButton() {
+        return this.closeButton
+    }
+
 }
