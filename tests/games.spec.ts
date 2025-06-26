@@ -82,22 +82,25 @@ for (let {location, creds} of Object.values(testData)) {
             vpnController = new VpnController();
             mainPage = new MainPage(page);
 
-            await vpnController.vpnConnect(location);
+            await vpnController.vpnConnnect(location);
             await waitForDNS('tombriches.com');
 
             await mainPage.navTo('https://tombriches.com'); 
-            await mainPage.addLocatorHandler(mainPage.getTournModal, mainPage.handler)
-            await mainPage.addLocatorHandler(mainPage.getCustomerIoMessage, mainPage.handrelCustomerIo)
+            await mainPage.addLocatorHandler(mainPage.getTournModal, () => mainPage.handler())
+            await mainPage.addLocatorHandler(mainPage.getCustomerIoMessage, () => mainPage.handrelCustomerIo())
+            await mainPage.addLocatorHandler(mainPage.getDepModal, () => mainPage.handler())
+
             await mainPage.openLoginModal()
             await mainPage.login({email: creds.email, password: creds.password})
 
         })
 
         test('Check games of providers', async () => {
+            await mainPage.openProvidersDropdown();
+            await mainPage.getProviderLocator.first().waitFor({state: 'visible'})
             const providerNames = await mainPage.getAllProviders(); 
             
             for (const providerName of providerNames) {
-                await mainPage.openProvidersDropdown();
                 await mainPage.clickOnProvider(providerName);
 
                 await mainPage.page.waitForTimeout(3000); 
@@ -110,15 +113,15 @@ for (let {location, creds} of Object.values(testData)) {
 
                 const numGamesToCheck = Math.min(2, playButtons.length); 
                 for (let i = 0; i < numGamesToCheck; i++) {
-                    const gameTitle = await mainPage.getGameTitle(i);
+                    // const gameTitle = await mainPage.getGameTitle(i);
 
-                    await test.step(`Checking "${gameTitle}" of provider "${providerName}"`, async () => {
-                        await mainPage.clickOnPlayButton(playButtons[i]);
+                    await test.step(`Checking "${i}" of provider "${providerName}"`, async () => {
+                        await mainPage.clickOnPlayButton(i, playButtons[i]);
                         await mainPage.page.waitForTimeout(15000);
 
-                        const safeTitle = gameTitle.replace(/[<>:"\/\\|?*]/g, '-'); // sanitize filename
+                        // const safeTitle = gameTitle.replace(/[<>:"\/\\|?*]/g, '-'); // sanitize filename
                         await mainPage.page.screenshot({
-                            path: `Screenshots/${location}/${providerName}_${safeTitle}.png`
+                            path: `Screenshots/${location}/${providerName}_${i}.png`
                         });
 
                         await mainPage.navTo('/');
