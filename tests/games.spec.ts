@@ -29,7 +29,7 @@ const testData = {
     //     creds: USERS.AU
     // },
     CH: {
-        location: 'Switzerland',
+        location: 'Switzerland - 2',
         creds: USERS.CH
     },
     PT: {
@@ -72,6 +72,9 @@ async function waitForDNS(domain: string, timeoutMs = 30000) {
 
 
 
+
+
+
 for (let {location, creds} of Object.values(testData)) {
 
     test.describe(`Providers test ${location}`, () => {
@@ -82,19 +85,10 @@ for (let {location, creds} of Object.values(testData)) {
         test.beforeEach(async ({page}) => {
             vpnController = new VpnController();
             mainPage = new MainPage(page);
-
+            console.log(location)
             await vpnController.vpnConnect(location);
 
-             while (true) {
-                const status = await vpnController.isConnectedToLocation(location)
-
-                if (status === true){
-                    break
-                } else {
-                    await vpnController.sleepVPN(2000)
-                }
-            }
-            console.log(`VPN connected to ${location}`);
+            await vpnController.waitForVpnConnection(location)
             await waitForDNS('tombriches.com');
 
             await mainPage.navTo('https://tombriches.com'); 

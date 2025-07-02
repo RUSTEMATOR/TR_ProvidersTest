@@ -1,28 +1,44 @@
-import { exec } from "child_process";
+import { spawn } from 'child_process'
 import { promisify } from 'util';
 
-const execAsync = promisify(exec);
+
 
 export class VpnController {
   constructor() {}
 
   async runVPN(command: string): Promise<string> {
-    try {
-      const { stdout, stderr } = await execAsync(`expressvpn ${command}`);
+    return new Promise((resolve, reject) => {
+      const [cmd, ...args] = command.split(' ');
+      const vpn = spawn('expressvpn', [cmd, ...args]);
 
-      if (stderr) {
-        console.error(`Command stderr: ${stderr}`);
-      }
+      let stdout = '';
+      let stderr = '';
 
-      return stdout;
-    } catch (error: any) {
-      console.error(`Error executing command: ${error.message}`);
-      return '';
-    }
+      vpn.stdout.on('data', (data) => {
+        const text = data.toString();
+        stdout += text;
+        process.stdout.write(`[VPN stdout] ${text}`); // optional live logging
+      });
+
+      vpn.stderr.on('data', (data) => {
+        const text = data.toString();
+        stderr += text;
+        process.stderr.write(`[VPN stderr] ${text}`);
+      });
+
+      vpn.on('close', (code) => {
+        if (code === 0) {
+          resolve(stdout);
+        } else {
+          reject(new Error(`VPN command failed: ${stderr}`));
+        }
+      });
+    });
   }
 
+
   async vpnConnect(location: string): Promise<void> {
-    await this.runVPN(`connect "${location}"`);
+    await this.runVPN(`connect ${location}`);
   }
 
   async vpnDisconnect(): Promise<void> {
@@ -48,6 +64,20 @@ export class VpnController {
 
     return false;
   }
+
+
+async waitForVpnConnection(targetLocation: string, timeoutMs = 30000) {
+  const start = Date.now();
+
+  while (Date.now() - start < timeoutMs) {
+    const isConnected = await this.isConnectedToLocation(targetLocation);
+    if (isConnected) return;
+    console.log(`[⏳] Waiting for VPN to connect to ${targetLocation}...`);
+    await this.sleepVPN(2000);
+  }
+
+  throw new Error(`VPN failed to connect to ${targetLocation} within ${timeoutMs / 1000}s`);
+}
 }
 
 export default VpnController;
