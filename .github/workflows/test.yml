@@ -1,0 +1,47 @@
+name: Script
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  vpn-e2e-test:
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 90
+
+    env:
+      HOME: /home/runner
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1  # optionally skip for speed if using pre-installed
+      # Add any custom env vars here, like:
+      # VPN_USER: ${{ secrets.VPN_USER }}
+      # VPN_PASS: ${{ secrets.VPN_PASS }}
+
+    steps:
+    - name: 🛒 Checkout repo
+      uses: actions/checkout@v3
+
+    - name: 🔧 Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20
+
+    - name: 📦 Install dependencies
+      run: npm ci
+
+    - name: 📥 Install Playwright Browsers
+      run: npx playwright install --with-deps
+
+    - name: ✅ Run VPN tests
+      run: npx playwright test tests/vpn.spec.ts
+      # Replace with your actual test path
+
+    - name: 📤 Upload screenshots on failure
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: gathered-screenshots
+        path: Screenshots/
+        retention-days: 3
