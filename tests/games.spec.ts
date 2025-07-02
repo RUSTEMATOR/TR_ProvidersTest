@@ -83,7 +83,7 @@ for (let {location, creds} of Object.values(testData)) {
             vpnController = new VpnController();
             mainPage = new MainPage(page);
 
-            await vpnController.vpnConnnect(location);
+            await vpnController.vpnConnect(location);
 
              while (true) {
                 const status = await vpnController.isConnectedToLocation(location)
