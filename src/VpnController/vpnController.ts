@@ -38,6 +38,7 @@ export class VpnController {
 
 
   async vpnConnect(location: string): Promise<void> {
+    await this.vpnDisconnect()
     await this.runVPN(`connect ${location}`);
   }
 
