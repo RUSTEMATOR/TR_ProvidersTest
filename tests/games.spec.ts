@@ -70,7 +70,7 @@ for (let {location, creds} of Object.values(testData)) {
             vpnController = new VpnController();
             mainPage = new MainPage(page);
             console.log(location)
-            await vpnController.vpnDisconnect()
+           
             await vpnController.vpnConnect(location);
 
             await vpnController.waitForVpnConnection(location)
