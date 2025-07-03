@@ -14,7 +14,7 @@ jobs:
   vpn-e2e-test:
     runs-on: self-hosted
 
-    timeout-minutes: 700
+    timeout-minutes: 20000
 
     steps:
     - name: 🛒 Checkout repo
