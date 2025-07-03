@@ -8,50 +8,34 @@ import { USERS } from "../src/Users/users";
 
 
 const testData = {
-    // IE: {
-    //     location: 'Ireland',
-    //     creds: USERS.IE
-    // },
-    // NL: {
-    //     location: 'Netherlands - Amsterdam',
-    //     creds: USERS.NL
-    // },
-    // DE: {
-    //     location: 'Germany - Frankfurt - 1',
-    //     creds: USERS.DE
-    // },
-    // BE: {
-    //     location: 'Belgium',
-    //     creds: USERS.BE
-    // },
-    // AU: {
-    //     location: 'Australia - Melbourne',
-    //     creds: USERS.AU
-    // },
+    IE: {
+        location: 'Ireland',
+        creds: USERS.IE
+    },
+    NL: {
+        location: 'Netherlands - Amsterdam',
+        creds: USERS.NL
+    },
+    DE: {
+        location: 'Germany - Frankfurt - 1',
+        creds: USERS.DE
+    },
+    AU: {
+        location: 'Australia - Melbourne',
+        creds: USERS.AU
+    },
     CH: {
         location: 'Switzerland - 2',
         creds: USERS.CH
-    },
-    PT: {
-        location: 'Portugal',
-        creds: USERS.PT
     },
     AT: {
         location: 'Austria',
         creds: USERS.AT
     },
-    SE: {
-        location: 'Sweden',
-        creds: USERS.SE
-    },
     FR: {
         location: 'France - Paris - 1',
         creds: USERS.FR
     },
-    SK: {
-        location: 'Slovakia',
-        creds: USERS.SK
-    }
 }
 
 
